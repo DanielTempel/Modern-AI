@@ -85,11 +85,11 @@ Repository, branch and commit metadata can identify the source snapshot from whi
 
 Incremental indexing can update affected entries and relationships after files are added, modified or deleted rather than rebuilding the complete index after every change. Structural indexes require particular care because a change in one file can alter relationships to symbols elsewhere.
 
-Not every form of current state belongs in a retrieval index. Frequently changing operational information such as Git status, test output or CI results can be obtained directly through tools. Retrieval is more appropriate for searching larger collections of source code, documentation and project knowledge.
+Not every form of current state belongs in a retrieval index. Frequently changing operational information such as Git status, test output or continuous integration (CI) results can be obtained directly through tools. Retrieval is more appropriate for searching larger collections of source code, documentation and project knowledge.
 
 Retrieval should also be evaluated separately from the LLM that consumes its results. A failure caused by missing evidence differs from one in which correct evidence was retrieved but interpreted incorrectly. Retrieval can also succeed while the context-building stage excludes the relevant result. Component-level evaluation therefore helps distinguish these failure sources by recording both retrieved evidence and the information actually included in the active context.
 
-For a single ranked retrieval operation, Recall@k measures the proportion of annotated relevant retrieval units found among the top-k results. The retrieval unit may be a file, method or chunk and must be defined together with the relevance labels used by the evaluation set. A ranking metric such as nDCG@k can additionally account for graded relevance and result position.
+For a single ranked retrieval operation, Recall@k measures the proportion of annotated relevant retrieval units found among the top-k results. The retrieval unit may be a file, method or chunk and must be defined together with the relevance labels used by the evaluation set. A ranking metric such as normalised discounted cumulative gain (nDCG@k) can additionally account for graded relevance and result position.
 
 An agentic retrieval strategy may execute several queries and combine evidence across multiple steps. It should therefore also be evaluated at task level under a defined retrieval or tool budget. Relevant measures include whether the required evidence was eventually acquired, retrieval latency, the number of retrieval rounds and, ultimately, whether the complete assistant succeeds on realistic software-engineering tasks.
 

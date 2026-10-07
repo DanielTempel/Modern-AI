@@ -3,6 +3,12 @@
 \chapter{Understanding Local LLM Models}
 \label{chap:local-llms}
 
+% Keep the expanded chapter compact without changing body font or line spacing.
+\begingroup
+\setlength{\parskip}{3pt}
+\setlength{\abovedisplayskip}{3pt}
+\setlength{\belowdisplayskip}{3pt}
+
 Local inference means that the model weights and the computations required to generate responses are located on hardware controlled by the user rather than being accessed through a remote inference API. For a software-engineering system, this can provide greater control over deployment and reduce the need to transmit project source code to an external service.
 
 The main limitation is hardware capacity. Model weights must be accommodated within the available system and GPU memory, while context processing and intermediate computations require additional runtime memory. Understanding parameters, numerical representation and context memory is therefore necessary before deciding which models are technically practical for local execution.
@@ -75,7 +81,7 @@ Low-precision model formats are not all equivalent. FP8 remains a floating-point
 
 GGUF quantization names encode different quantization recipes rather than a uniform number of bits for every tensor. Common llama.cpp variants span low-bit families such as \texttt{Q2\_K}, \texttt{Q3\_K\_M}, \texttt{Q4\_K\_M}, \texttt{Q5\_K\_M} and \texttt{Q6\_K} up to \texttt{Q8\_0}. The leading number indicates the approximate precision class, while the actual effective bits per weight can differ because scales, metadata and mixed tensor representations add overhead. The K suffix identifies the K-quant family, while suffixes such as S and M distinguish smaller and medium mixed-precision variants. IQ variants, such as \texttt{IQ2\_XS} or \texttt{IQ3\_M}, use importance-aware low-bit quantization approaches. Prefixes such as UD are publisher-specific rather than core llama.cpp quantization types; Unsloth uses them for its Dynamic GGUF variants, where quantization choices may differ between layers to preserve quality \parencite{ggml-quantize,unsloth-dynamic}.
 
-An alternative direction is to design models for extremely low-bit weights from the beginning rather than quantizing an already trained high-precision model. BitNet b1.58, for example, uses ternary weights \(\{-1,0,+1\}\), corresponding conceptually to about \(\log_2(3)\approx1.58\) bits of information per weight \parencite{ma2024bitnet}. This is a different model-design approach rather than simply another Q4-like format.
+An alternative direction is to design models for extremely low-bit weights from the beginning rather than quantizing an already trained high-precision model. BitNet b1.58, for example, uses ternary weights \(\{-1,0,+1\}\), corresponding conceptually to about \(\log_2(3)\approx1.58\) bits of information per weight \parencite{ma2024bitnet}. This is a different model-design approach rather than simply another Q4-like format. Native low-bit designs can substantially reduce model-weight storage and memory-bandwidth requirements compared with conventional FP16 models. This can change the hardware cost of inference when suitable kernels and hardware support are available, although the theoretical reduction in bit width does not automatically translate into an equivalent end-to-end speedup.
 
 \section{Runtime memory and context}
 
@@ -107,7 +113,7 @@ Figure~\ref{fig:local-runtime-memory} separates model weights from the additiona
 
 \noindent\begin{minipage}{\linewidth}
 \centering
-\includegraphics[width=13.5cm,trim=0 165bp 0 125bp,clip]{images/local-llm-runtime-memory.png}
+\includegraphics[width=13cm,trim=0 165bp 0 125bp,clip]{images/local-llm-runtime-memory.png}
 \captionsetup{hypcap=false}
 \captionof{figure}{Simplified runtime memory components of a local LLM.}
 \label{fig:local-runtime-memory}
@@ -122,3 +128,7 @@ Model specialisation is independent of quantization and local execution. A gener
 For the assistant, the largest available model is not automatically the most practical choice. A smaller coding-specialised, instruction-tuned model that fits comfortably into GPU memory may be more practical to deploy than a much larger general-purpose model that requires aggressive quantization or CPU offloading.
 
 However, practical suitability cannot be determined from parameter count or memory usage alone. Candidate models should therefore be evaluated not only on coding benchmarks, but also on their ability to follow tool-use instructions and produce changes that pass relevant tests, while remaining within the available memory, context and latency budget. These evaluation criteria lead directly to the next topic: \textbf{LLM Benchmarks and Model Selection}.
+
+% Finish this chapter before restoring the document spacing.
+\par\clearpage
+\endgroup
