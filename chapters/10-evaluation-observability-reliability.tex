@@ -12,15 +12,17 @@ A \textbf{task} defines the input, initial environment and success criteria, whi
 
 For \emph{Fix GitHub issue \#42 and verify the solution}, an evaluation can start from a specified repository revision, issue description, assistant configuration and isolated environment. The assistant operates through the same retrieval and tool interfaces used normally, so the evaluation covers the model and agent harness as a combined system \parencite{grace2026evals}.
 
-The assistant's final response is not evidence of success. The relevant result is the produced code state together with required execution behaviour. Outcome criteria may require issue-specific tests and existing tests to pass and the project to build successfully. Execution criteria may require verification of the final code state or prohibit particular operations. A \textbf{grader} evaluates these task-relevant properties, and overall success requires all mandatory checks to pass.
+A \textbf{grader} evaluates the final code state and mandatory execution constraints. Outcome criteria may require issue-specific tests, regression tests and a successful build; execution criteria may require final verification or prohibit particular operations. Overall success requires all mandatory checks to pass.
 
 For objective software-engineering tasks, deterministic graders such as tests, builds, static analysis and state comparisons are preferable because they provide reproducible evidence. Model-based or human graders remain useful when requirements cannot be represented reliably in code. SWE-bench follows the same outcome-oriented principle by verifying changes to real repositories through execution rather than judging whether a generated patch appears plausible \parencite{jimenez2024swebench}.
 
-Final grading should be independent of feedback available to the assistant. \texttt{run\_tests} helps the assistant reproduce defects and verify intermediate changes, but its output alone should not determine success: the assistant may modify test-related files, and a test run before the final edit does not verify the submitted state. The evaluation harness should therefore apply evaluator-controlled checks to the final artefact so that agent changes cannot silently redefine the acceptance criteria.
+Final grading should apply evaluator-controlled checks to the submitted artefact. Intermediate \texttt{run\_tests} feedback is insufficient: the assistant may modify tests or edit code after verification. Independent grading prevents such changes from silently redefining the acceptance criteria.
 
-A failing test is also distinct from a tool failure. A correctly executed test that exposes a defect provides useful evidence, whereas invalid tool arguments or a test runner that fails to start indicate different problems. These events should not be collapsed into a single error metric.
+As established in Chapters~\ref{chap:tool-use} and~\ref{chap:agents}, a failing assertion is a valid tool observation, whereas an invalid request or execution failure is a different event. Evaluation metrics should retain these categories separately.
 
 Evaluation infrastructure requires a similar distinction. A broken grader can make a trial invalid and should be reported separately. In contrast, failures of dependencies that belong to the evaluated deployment remain part of end-to-end reliability. Attempted, invalid and valid unsuccessful trials should therefore remain distinguishable.
+
+Figure~\ref{fig:assistant-trial-evaluation} separates grading of trial outcomes and trajectories from trace-based operational measurements; telemetry alone does not establish task success.
 
 \begin{center}
 \begin{minipage}{\linewidth}
@@ -38,9 +40,9 @@ Task success does not fully describe execution quality. Two trials may produce t
 
 Trajectory constraints are useful when the execution path affects correctness or policy compliance, for example when final verification is mandatory or a destructive operation is prohibited. Exact trajectory matching is usually too restrictive because several valid action sequences may produce the same correct outcome. Grading should therefore constrain task-relevant behaviour rather than prescribe an arbitrary sequence of tool calls \parencite{grace2026evals}.
 
-A \textbf{trace} makes the trajectory observable through related spans for retrieval, model inference and application-controlled tool execution. For issue \#42, these may include retrieval, \texttt{read\_file}, \texttt{edit\_file}, test execution, a corrective model call and final verification. Spans can record duration, status, errors, token usage and operation-specific metadata. OpenTelemetry's GenAI Semantic Conventions provide an emerging vocabulary for such telemetry, although the relevant agent conventions remain under Development in 2026 \parencite{otel-agent-spans}.
+A \textbf{trace} makes the trajectory observable through related spans for retrieval, model inference and application-controlled tool execution. For issue \#42, these may include retrieval, \texttt{read\_file}, \texttt{apply\_patch}, test execution, a corrective model call and final verification. Spans can record duration, status, errors, token usage and operation-specific metadata. OpenTelemetry's GenAI Semantic Conventions provide an emerging vocabulary for such telemetry, although the relevant agent conventions remain under Development in 2026 \parencite{otel-agent-spans}.
 
-Trace data helps distinguish failures with similar outcomes. A task may fail because of irrelevant retrieval, incorrect reasoning, invalid tool arguments, unavailable infrastructure or premature termination. Conversely, a failing test can be useful evidence that the reported defect was reproduced. Interpretation therefore depends on the operation's semantics rather than simply counting failed spans or non-zero exit codes.
+Trace analysis can attribute unsuccessful trials to retrieval, model decisions, tool execution, infrastructure or premature termination. These categories support diagnosis and comparison beyond an aggregate task-success rate.
 
 Operational measurements should use the task as their boundary. \textbf{End-to-end task latency} captures the complete execution rather than one model call. Its measurement should define whether queueing, retries, approval waits and final verification are included, and comparisons should use the same definition. Tail metrics such as p95 should also state which trials are included so that excluding timeouts does not make latency appear better while reliability worsens.
 
@@ -81,6 +83,8 @@ Reliability must also survive system changes. Replacing the model or modifying p
 A production failure can become a regression case. Its trace supports diagnosis, while reproduction additionally requires relevant inputs, configuration and environment state. If the original conditions cannot be reconstructed exactly, a controlled scenario can preserve the behaviour that needs to be tested. After the system is corrected, the case remains in the regression suite for future versions.
 
 Regression cases should still be complemented by capability or held-out tasks, since repeated optimisation against known cases does not independently demonstrate generalisation.
+
+Figure~\ref{fig:evaluation-regression-loop} connects release evaluation with production feedback: diagnosed failures become reproducible cases that test subsequent assistant versions.
 
 \begin{center}
 \begin{minipage}{\linewidth}

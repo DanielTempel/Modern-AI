@@ -49,6 +49,8 @@ Network access should also be treated as a capability. Tests may require no exte
 
 Credentials require separate protection. If repository-controlled code can read \texttt{GITHUB\_TOKEN} from the sandbox environment, the secret remains exposed even if it never enters the model's active context. A stronger design keeps credentials outside the untrusted execution environment and exposes an authorised operation instead. The assistant may request \texttt{create\_pull\_request(...)}, while a trusted broker validates the repository, arguments and approval before using a narrowly scoped, short-lived credential. \textbf{Credential mediation protects the secret; operation-level authorisation constrains how its authority may be used.}
 
+Figure~\ref{fig:agent-security} shows how harness checks route local execution into a sandbox and sensitive external operations through a credential broker.
+
 \begin{center}
 \begin{minipage}{\linewidth}
 \centering
@@ -59,7 +61,7 @@ Credentials require separate protection. If repository-controlled code can read 
 \end{minipage}
 \end{center}
 
-Local operations such as tests remain inside the sandbox, while sensitive external actions can be executed by trusted infrastructure without exposing backend credentials to sandboxed code.
+The two paths enforce different boundaries: the sandbox limits repository-controlled code, while the broker authorises external operations without exposing backend credentials to that code.
 
 \section{Prompt injection and defence in depth}
 

@@ -6,7 +6,7 @@ Chapter~\ref{chap:local-llms} explained how model size, numerical representation
 
 A benchmark is a standardised collection of tasks with a scoring procedure, whereas evaluation also includes the prompt, context, tools, execution limits and success criteria. Model selection uses this evidence to identify suitable candidates for a specific application. Frameworks such as HELM therefore evaluate language models across multiple scenarios and metrics rather than reducing capability to a single score \parencite{liang2022helm}.
 
-For this report, the final comparison should evaluate candidate models within a fixed assistant architecture. Its results would therefore describe suitability for this system rather than model capability in isolation. Candidates should also be treated as concrete deployment configurations, including the model version, quantization and inference runtime and configuration intended for deployment.
+For this report, the final comparison should evaluate candidate models within a fixed assistant architecture. Its results would therefore describe suitability for this system rather than model capability in isolation. Candidates should also be treated as concrete deployment configurations, including the model version, quantization scheme, inference runtime, and runtime configuration intended for deployment.
 
 \section{Evaluating software engineering capabilities}
 \label{sec:engineering-capabilities}
@@ -19,6 +19,8 @@ Repository-level work introduces additional requirements such as code navigation
 
 Tool-based environment interaction represents another relevant evaluation dimension. Terminal-Bench 2.0 evaluates systems in command-line environments where they must inspect the environment, execute commands, observe results and complete multi-step tasks \parencite{merrill2026terminalbench}. This becomes relevant when an LLM is embedded into an interactive system rather than used only for single-response generation.
 
+Figure~\ref{fig:evaluation-dimensions} relates these complementary benchmark dimensions to the representative assistant tasks that a deployment evaluation should cover.
+
 \noindent\begin{minipage}{\linewidth}
 \centering
 % Trim only outer whitespace; preserve all labels and the explanatory footer.
@@ -28,7 +30,7 @@ Tool-based environment interaction represents another relevant evaluation dimens
 \label{fig:evaluation-dimensions}
 \end{minipage}
 
-At this level, measured performance depends not only on the model but also on the prompt, context policy, available tools and execution conditions. The evaluation harness initialises the task environment, executes the assistant under defined limits and records the resulting actions and outputs. The evaluator and acceptance tests then determine whether the resulting solution satisfies the task requirements.
+Figure~\ref{fig:evaluation-factors} shows why measured performance depends on the assistant configuration and execution conditions as well as the model. The evaluation harness initialises the task environment, executes the assistant under defined limits and records the resulting actions and outputs. The evaluator and acceptance tests then determine whether the resulting solution satisfies the task requirements.
 
 \noindent\begin{minipage}{\linewidth}
 \centering

@@ -11,6 +11,8 @@ The Model Context Protocol (MCP) addresses this problem by defining a shared pro
 
 In MCP terminology, the AI Software Engineering Assistant acts as the \textbf{Host}. The Host manages MCP clients that communicate with MCP servers, while each server exposes capabilities backed by an underlying system such as GitHub, a repository, a database or another service \parencite{mcp2026architecture}.
 
+Figure~\ref{fig:mcp-architecture} shows how the Host\textquotesingle s MCP clients connect the assistant to external systems through servers responsible for their backend integrations.
+
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{images/mcp-host-client-server.png}
@@ -18,9 +20,11 @@ In MCP terminology, the AI Software Engineering Assistant acts as the \textbf{Ho
 \label{fig:mcp-architecture}
 \end{figure}
 
-MCP servers can expose \textbf{tools}, \textbf{resources} and \textbf{prompts}. Tools represent invocable operations, resources provide addressable data, and prompts provide reusable message templates. For the software-engineering workload considered here, tools and resources are most relevant because they provide access to executable operations and repository-related information.
+These server connections expose capabilities as \textbf{tools}, \textbf{resources} and \textbf{prompts}. Tools represent invocable operations, resources provide addressable data, and prompts provide reusable message templates. For the software-engineering workload considered here, tools and resources are most relevant because they provide access to executable operations and repository-related information.
 
 MCP tool discovery should be distinguished from the tool-calling interface of the LLM. A server can describe a tool through its name, description and schema, but the model does not communicate with the MCP server directly. The Host selects which discovered tools are made available to the model and maps their definitions to the tool-calling interface of the selected inference runtime or model API. If the LLM generates a structured call such as \texttt{search\_code("Authorization")}, the assistant runtime maps it back to the corresponding MCP server. MCP therefore complements the function calling described in Chapter~\ref{chap:tool-use} rather than replacing it.
+
+Figure~\ref{fig:mcp-tool-flow} follows a model-generated request through Host validation and MCP routing to backend execution, then returns the result for a subsequent model request.
 
 \begin{figure}[!htbp]
 \centering
@@ -59,4 +63,4 @@ The additional protocol boundary also introduces costs. Remote servers can add n
 
 MCP compatibility alone also does not establish a security boundary or make a connected server trustworthy. Isolation, authorisation and input validation must be enforced by the Host, server and deployment environment. Local servers are not automatically sandboxed, capabilities should follow least-privilege principles, and sensitive operations may require Host-controlled user approval \parencite{mcp2026security}.
 
-MCP therefore provides a reusable protocol boundary between the AI Software Engineering Assistant and heterogeneous external capabilities without replacing the integrations behind them. It also does not determine which capabilities should be selected, how multiple servers maintain a consistent task state or how actions should be coordinated toward a goal. Coordinating these capabilities across multiple reasoning and execution steps is the next architectural problem, addressed by AI agents and agent harnesses in the following chapter.
+MCP provides a reusable integration boundary through which heterogeneous external capabilities become available to the assistant. Coordinating those capabilities toward a task objective is the responsibility of the agents and agent harnesses examined in the following chapter.

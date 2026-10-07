@@ -1,6 +1,6 @@
 % !TeX root = ../Tempel-Daniel.tex
 % Mandatory subject 1: Understanding Local LLM Models.
-\chapter{Fundamentals of Local LLM Inference}
+\chapter{Understanding Local LLM Models}
 \label{chap:local-llms}
 
 Local inference means that the model weights and the computations required to generate responses are located on hardware controlled by the user rather than being accessed through a remote inference API. For a software-engineering system, this can provide greater control over deployment and reduce the need to transmit project source code to an external service.
@@ -11,6 +11,8 @@ The main limitation is hardware capacity. Model weights must be accommodated wit
 
 Input text is processed by a tokenizer, which converts it into tokens and numerical token IDs. These are transformed into vector representations and processed through Transformer layers. Transformer layers combine attention mechanisms and feed-forward networks containing large learned weight matrices \parencite{vaswani2017attention}.
 
+Figure~\ref{fig:local-inference-pipeline} traces the conversion of repository input into a generated token and its return to the context for the next generation step.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=12.5cm]{images/local-llm-inference-pipeline-autoregressive.png}
@@ -18,7 +20,7 @@ Input text is processed by a tokenizer, which converts it into tokens and numeri
 \label{fig:local-inference-pipeline}
 \end{figure}
 
-An autoregressive LLM predicts one token at a time. Each generated token becomes part of the context used for the following step.
+The feedback path represents autoregressive generation: each predicted token becomes part of the context for the following step.
 
 A model described as 8B contains approximately eight billion learned parameters, most of which are weights. These weights do not individually represent specific facts or concepts; learned information is distributed across large collections of parameters.
 
@@ -97,6 +99,8 @@ The trade-off is additional memory consumption. With a dynamic cache, longer pro
 
 % Crop only the outer whitespace and embedded "Figure 2" caption in LaTeX.
 % The original PNG is preserved unchanged; keep the diagram before its discussion.
+Figure~\ref{fig:local-runtime-memory} separates model weights from the additional memory required for context and execution, explaining why model file size alone is insufficient for capacity planning.
+
 \noindent\begin{minipage}{\linewidth}
 \centering
 \includegraphics[width=16cm,trim=0 165bp 0 125bp,clip]{images/local-llm-runtime-memory.png}

@@ -55,7 +55,7 @@ The corresponding tool definition usually contains a name, description and schem
 
 Function calling does not by itself guarantee that generated arguments satisfy the declared schema. This depends on the API or inference runtime and the constraint mode being used. OpenAI, for example, distinguishes strict function calling, which enforces the supplied function schema through Structured Outputs, from non-strict best-effort generation \parencite{openai-function-calling}.
 
-The execution boundary is central to the assistant architecture. The LLM does not itself open files, execute tests or call remote APIs. It generates a structured request for an operation. The assistant runtime receives this request, validates its arguments, checks that the requested operation is permitted within the task's allowed scope and dispatches the corresponding software operation. The result is then returned to the runtime and can be included in a subsequent model request.
+Figure~\ref{fig:tool-execution} locates the execution boundary between model-generated requests and runtime-controlled operations. The LLM does not itself open files, execute tests or call remote APIs. It generates a structured request for an operation. The assistant runtime receives this request, validates its arguments, checks that the requested operation is permitted within the task's allowed scope and dispatches the corresponding software operation. The result is then returned to the runtime and can be included in a subsequent model request.
 
 \noindent\begin{minipage}{\linewidth}
 \centering
@@ -65,27 +65,6 @@ The execution boundary is central to the assistant architecture. The LLM does no
 \label{fig:tool-execution}
 \end{minipage}
 
-
-This interaction can be summarised as:
-
-\begin{center}
-\small\singlespacing
-\begin{tabular}{c}
-User \\
-\(\downarrow\) \\
-LLM \\
-\(\downarrow\) structured tool call \\
-Assistant runtime \\
-\(\downarrow\) \\
-Repository / API / test runner \\
-\(\downarrow\) tool result \\
-Assistant runtime \\
-\(\downarrow\) subsequent model request \\
-LLM \\
-\(\downarrow\) \\
-response or subsequent tool call \\
-\end{tabular}
-\end{center}
 
 The execution environment does not necessarily have to be the developer's own process. Some platforms provide tools executed by provider infrastructure, while others return tool requests to the client application for execution. The architectural distinction remains the same: generation specifies an operation, while the actual operation is performed outside the model itself.
 
@@ -98,7 +77,7 @@ The interaction can be illustrated using the recurring task \emph{Fix GitHub iss
 
 This sequence separates generation of a proposed change from its application to the repository. Producing corrected source code does not itself modify a file; the modification occurs only when the corresponding tool operation is executed by the surrounding system.
 
-At each interaction step, several different forms of correctness should be distinguished:
+Table~\ref{tab:tool-failures} distinguishes syntax, schema, semantic and decision errors so that request validity is assessed separately from action suitability.
 
 \noindent\begin{minipage}{\linewidth}
 \captionsetup{hypcap=false}

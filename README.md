@@ -1,9 +1,8 @@
 # Modern AI Systems — каркас отчёта
 
 Главный файл: `Tempel-Daniel.tex`. Результат сборки: `Tempel-Daniel.pdf`.
-Это заготовка для постепенного наполнения, а не готовая работа для сдачи.
-Introduction и первые шесть тем заполнены. В главу 8 добавлены введение и раздел 8.1;
-главы 9–11 и PREFACE заполнены. SUMMARY остаётся для дальнейшего наполнения.
+Introduction, PREFACE, все десять тематических глав (2–11) и SUMMARY заполнены.
+Перед сдачей необходимы итоговая сборка PDF и проверка полного отчёта.
 
 ## Где писать
 
@@ -137,24 +136,26 @@ glossary и appendices не добавлены автоматически. Тр�
 Глава 10, `chapters/09-security-sandboxing.tex`, содержит разделы 10.1–10.3:
 least privilege, sandboxing, sensitive resources и prompt injection.
 Таблица прав и ограничений оформлена как Table 3. Приложенная схема заменяет
-текстовый набросок Figure 15; оригинал сохранён без изменений в
+текстовый набросок (теперь Figure 16); оригинал сохранён без изменений в
 `images/agent-security-sandboxing.png`. Добавлены два источника OWASP издания 2025;
 буквы a/b в ссылках определяются автоматически по порядку библиографии.
 
 Глава 9, `chapters/08-production-architecture.tex`, содержит разделы 9.1–9.3:
 model routing, efficient LLM serving и resilient/scalable agent execution.
-Figures 13–14: `images/production-architecture.png` и
+Figures 14–15: `images/production-architecture.png` и
 `images/long-running-task-execution.png`; оригиналы сохранены без изменений.
 Добавлены девять источников, включая документацию vLLM для prefix caching.
 Недатированные страницы Ray, Temporal и vLLM цитируются с n.d.; дата обращения
 06.10.2026 хранится отдельно. Заголовки и основной текст используют British English.
 
-Глава 8, `chapters/07-agents-agent-harnesses.tex`, пока содержит введение и
-раздел 8.1 об agent loop, harness, ACI и различии между остановкой и успешным
-завершением задачи. Figure 12: `images/agent-loop-harness.png` (оригинал без изменений).
-Первоначально присланная схема субагентов сохранена как
-`images/agent-subagent-inspection.png` и в PDF не используется.
-Добавлены три источника; продолжение главы ещё не предоставлено.
+Глава 8, `chapters/07-agents-agent-harnesses.tex`, содержит полный предоставленный
+текст: введение и разделы 8.1–8.3 об agent loop, task state, recovery, completion
+и делегировании субагентам. Figure 12: `images/agent-loop-harness.png`;
+Figure 13: `images/agent-subagent-delegation.png`. Оба оригинала сохранены
+без изменений. Прежняя схема `images/agent-subagent-inspection.png` не используется.
+Глава ссылается на четыре источника; новый источник о multi-agent research
+system оформлен по указанным в статье авторам (Hadfield et al., 2025).
+Нумерация последующих рисунков обновится при следующей сборке PDF.
 
 Глава 7, `chapters/06-model-context-protocol.tex`, содержит текст о MCP, роли Host,
 клиентах и серверах, интеграции tools и границах протокола. Figures 10–11 хранятся
@@ -212,5 +213,5 @@ outputs, function calling и tool use, три JSON-примера, послед�
 `chapters/10-evaluation-observability-reliability.tex` содержит три раздела,
 формулы cost per successful task, pass@k и pass^k и ссылки на четыре источника.
 Схемы сохранены без изменений в `images/assistant-trial-evaluation.png`
-(Figure 16) и `images/evaluation-regression-loop.png` (Figure 17).
+(Figure 17) и `images/evaluation-regression-loop.png` (Figure 18).
 Они заменяют текстовые наброски из исходного материала.

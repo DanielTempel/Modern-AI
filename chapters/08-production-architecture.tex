@@ -4,7 +4,7 @@
 
 The previous chapter described how the agent harness coordinates model calls, context construction, tools and task state. Production deployment adds another problem: these operations must remain reliable and responsive under changing workloads while controlling resource use and cost.
 
-Two layers are useful to distinguish. The \textbf{agent execution layer} coordinates retrieval, tools and task state, while the \textbf{model-serving layer} provides inference and manages computational resources. Their workloads differ: an agent task may wait for tests or external operations, whereas model servers process many concurrent inference requests competing for GPU memory and compute.
+Figure~\ref{fig:production-architecture} separates two layers with different workloads. The \textbf{agent execution layer} coordinates retrieval, tools and task state, while the \textbf{model-serving layer} provides inference and manages computational resources. Their workloads differ: an agent task may wait for tests or external operations, whereas model servers process many concurrent inference requests competing for GPU memory and compute.
 
 This chapter therefore focuses on model routing, efficient LLM serving and resilient execution of long-running agent tasks. These mechanisms should be evaluated against task-success, latency, availability and cost objectives rather than throughput or GPU utilisation alone.
 
@@ -51,7 +51,7 @@ However, high utilisation is not itself the objective. Aggressive concurrency ma
 
 A software-engineering task may remain active much longer than one inference request while waiting for tests, CI or another external operation. Its lifetime should therefore be independent of both the original HTTP request and a particular worker process.
 
-A production architecture can assign a persistent task identifier and place executable work into a queue. Workers claim tasks and use the agent harness to advance them, while important orchestration state is stored outside the worker.
+Figure~\ref{fig:long-running-task-execution} shows queued work advancing through workers while durable task state remains outside them. A persistent task identifier connects resumed execution to the same task.
 
 \begin{center}
 \begin{minipage}{\linewidth}
@@ -62,26 +62,22 @@ A production architecture can assign a persistent task identifier and place exec
 \end{minipage}
 \end{center}
 
-A persisted checkpoint alone is insufficient for recovery. If it records that a patch was applied but the modified files existed only on the failed worker's local disk, another worker cannot continue verification. Recovery requires both \textbf{durable orchestration state} and access to the corresponding \textbf{execution artefacts}, such as a persistent workspace or a reproducible combination of repository revision and stored patch. Externally running CI or test jobs also require durable identifiers.
+The external state store decouples progress from a worker, but a persisted checkpoint alone is insufficient for recovery. If it records that a patch was applied but the modified files existed only on the failed worker's local disk, another worker cannot continue verification. Recovery requires both \textbf{durable orchestration state} and access to the corresponding \textbf{execution artefacts}, such as a persistent workspace or a reproducible combination of repository revision and stored patch. Externally running CI or test jobs also require durable identifiers.
 
-For issue \#42, a recoverable state can therefore reference the repository revision, patch, test environment and external job identifier. Another worker can then reconstruct or access the correct code state and continue from verification instead of repeating the complete analysis.
+For issue \#42, these references let a replacement worker recover the relevant code and test environment and resume verification.
 
 Recovery also requires task ownership. Queues and persisted state alone do not prevent a stale worker and a replacement worker from concurrently modifying the same task. Task claiming should therefore ensure that only the currently valid execution can commit task progress.
 
 Durable workflow systems provide one implementation approach. Temporal, for example, records workflow Event History and reconstructs workflow state through replay after worker failure \parencite{temporal-workflow}. This restores orchestration progress but does not automatically recover worker-local files or guarantee exactly-once execution of external operations.
 
-Side-effecting tools therefore require appropriate retry semantics. If \texttt{create\_pull\_request} succeeds but its response is lost, the runtime must determine whether the intended pull request already exists before repeating the operation, or use an available idempotency mechanism.
-
-Failure handling should also distinguish task-level evidence from infrastructure failures. A test that executes and reports a failed assertion provides evidence to the agent, whereas a model timeout or unavailable CI service may justify bounded retries, delayed execution or another eligible deployment. Recovery should preserve existing task progress rather than restart the complete agent loop unnecessarily.
+The retry distinction established in Section~\ref{sec:agent-task-state} also applies across workers: side effects require outcome reconciliation or an available idempotency mechanism, while infrastructure failures may justify bounded retries, delayed execution or another eligible deployment. Recovery should preserve existing task progress.
 
 Queues also separate incoming demand from execution capacity. If tasks arrive faster than workers can process them, excess work can wait while additional worker or model replicas increase capacity. Horizontal scaling adds replicas, whereas vertical scaling assigns more resources to an existing instance \parencite{kubernetes2026autoscaling}.
 
-Autoscaling should follow the constrained resource. CPU utilisation may be uninformative when workers are waiting for GPU-backed inference; queue depth, ongoing requests or latency can be more useful. Ray Serve, for example, can adjust replica counts based on ongoing requests per replica \parencite{ray-autoscaling}.
+Autoscaling should follow the constrained resource: adding workers cannot relieve a saturated model deployment or another limiting dependency. CPU utilisation may be uninformative when workers are waiting for inference; queue depth, ongoing requests or latency can be more useful. Ray Serve can adjust replica counts based on ongoing requests per replica \parencite{ray-autoscaling}.
 
 Replica count and physical compute capacity should also be distinguished. Scaling an application to zero replicas reduces its resource use, but monetary savings depend on whether the underlying GPU capacity can also be released or reused. Keeping ready capacity instead reduces cold-start latency at the cost of idle resources.
 
 Finally, incoming work must remain bounded. If demand continuously exceeds processing capacity, an unbounded queue only turns overload into growing latency and storage consumption. \textbf{Backpressure} limits or delays new work when downstream capacity is exhausted, while priority policies can reserve capacity for interactive tasks over background work.
-
-Scaling should therefore follow the measured bottleneck. Additional agent workers provide little benefit when all are waiting for a saturated model deployment, while additional model replicas do not help if another dependency limits task execution.
 
 These mechanisms are deployment choices whose value depends on workload, latency requirements and failure tolerance. As more models, workers and external services participate in execution, controlling their access to repositories and executable capabilities becomes increasingly important. This leads to the next chapter on security and sandboxing for AI agents.

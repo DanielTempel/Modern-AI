@@ -19,7 +19,9 @@ Lexical overlap becomes less reliable when the task and implementation use diffe
 
 Repository structure can provide another useful signal. Source files are connected through calls, imports, symbol references, inheritance and test–implementation relationships. If retrieval identifies a function in \texttt{src/auth.py}, its callers, validation helpers or related tests may be more useful than unrelated code with similar wording. RepoGraph explores this principle by representing repository-level relationships as a graph for AI software-engineering tasks \parencite{ouyang2025repograph}. Such structural information requires additional analysis and may be incomplete.
 
-Lexical, dense and structural retrieval should therefore be treated as complementary options rather than mandatory stages. A retrieval subsystem can select or combine them according to the repository, task and evaluation results. An indexed system may also retrieve a broad candidate set and then apply a reranker to a smaller subset. A reranker can potentially improve the final ranking at additional computational cost \parencite{thakur2021beir}.
+Lexical, dense and structural retrieval should therefore be treated as complementary options rather than mandatory stages. A retrieval subsystem can select or combine them according to the repository, task and evaluation results. An indexed system may also retrieve a broad candidate set and then apply a reranker to a smaller subset. A reranker may improve ranking quality at additional computational cost \parencite{thakur2021beir}.
+
+Figure~\ref{fig:rag-agentic-retrieval} shows direct and indexed routes to repository evidence; the feedback path allows further retrieval when the current evidence is insufficient.
 
 \begin{figure}[!htbp]
 \centering
@@ -70,9 +72,7 @@ Iteration alone does not make retrieval agentic. A fixed pipeline could always p
 
 Recent work on Agentic RAG describes a broader transition from fixed pipelines toward systems that adapt retrieval strategies and refine queries across multiple evidence-gathering steps \parencite{singh2025agenticrag}. Agentic retrieval refers here to the retrieval component of this behaviour, while Agentic RAG describes the wider interaction between adaptive retrieval, generation and reasoning.
 
-Agentic retrieval also does not imply repeated vector search. Exact identifiers may be handled through text or symbol search, references through repository analysis and broader behavioural questions through semantic retrieval. The defining property is that the next retrieval action depends on information obtained from previous steps.
-
-This still differs from the complete software-engineering agent discussed later in this report. Retrieval determines what external evidence should be acquired; editing files, executing tests and deciding whether the task is complete require a broader action loop.
+Adaptive steps may combine direct text or symbol search with indexed lexical, dense or structural retrieval. Editing, testing and task completion belong to the broader agent loop described in Chapter~\ref{chap:agents}.
 
 Adaptive retrieval adds cost and failure modes. Query reformulation can drift away from the original task, repeated searches can return the same evidence and unnecessary retrieval rounds increase latency and model usage. A failed search also does not establish that no relevant implementation exists; another query or retrieval method may still locate it. Retrieval budgets and tracking of previously inspected results can therefore limit unnecessary search.
 
@@ -93,6 +93,4 @@ For a single ranked retrieval operation, Recall@k measures the proportion of ann
 
 An agentic retrieval strategy may execute several queries and combine evidence across multiple steps. It should therefore also be evaluated at task level under a defined retrieval or tool budget. Relevant measures include whether the required evidence was eventually acquired, retrieval latency, the number of retrieval rounds and, ultimately, whether the complete assistant succeeds on realistic software-engineering tasks.
 
-Retrieval for an AI Software Engineering Assistant is therefore not equivalent to storing repository embeddings in a vector database. Depending on the task, the subsystem may use direct text or symbol search, indexed lexical or dense retrieval, repository structure or combinations of these approaches. More complex tasks can additionally benefit from adaptive retrieval when intermediate evidence reveals new information needs. The appropriate architecture should be determined by repository characteristics and evaluation results rather than by assuming that every retrieval mechanism is required.
-
-Retrieval gives the assistant a way to locate external evidence that may be selected for its active context. It still requires concrete interfaces through which repositories, documentation and other external resources can be exposed to the assistant runtime. The following chapter examines the Model Context Protocol as one mechanism for providing such resources and tools to AI applications in a standardised form.
+Repository characteristics and evaluation results should determine which retrieval mechanisms and degree of adaptation are useful. The following chapter examines the Model Context Protocol as a standardised interface for exposing repository resources and retrieval tools to the assistant runtime.

@@ -11,7 +11,7 @@ For a tool-using assistant, the goal is therefore to provide a relevant and suff
 \section{Constructing the active context}
 \label{sec:active-context}
 
-During a software-engineering task, more information may be available than should be included in a single request. Potential inputs include system and project instructions, the user request, tool definitions, previous interactions, repository files, source-code changes, tool results and retained information from earlier work. A context-building stage can select from these sources before invoking the LLM.
+During a software-engineering task, more information may be available than should be included in a single request. Potential inputs include system and project instructions, the user request, tool definitions, previous interactions, repository files, source-code changes, tool results and retained information from earlier work. Figure~\ref{fig:active-context-construction} shows how the context builder selects and structures these sources before invoking the LLM.
 
 \noindent\begin{minipage}{\linewidth}
 \centering
@@ -60,6 +60,8 @@ For a software-engineering assistant, compacted state should retain the goal, ex
 Anthropic describes compaction as preserving important decisions and unresolved work while discarding redundant information, including old tool results \parencite{anthropic2025context}. OpenAI likewise provides compaction for long-running interactions to reduce context while carrying forward state required by later turns \parencite{openai-compaction}.
 
 Compaction is inherently lossy. A smaller representation reduces token usage and irrelevant information, but may discard details that later become useful. Structured checkpoints can reduce this risk for explicitly recorded operational facts, while the original interaction history can remain stored outside the active context for later recovery.
+
+Figure~\ref{fig:active-context-evolution} illustrates how the active context changes from analysis to modification and verification, while excluded information remains available outside the model request.
 
 \noindent\begin{minipage}{\linewidth}
 \centering
