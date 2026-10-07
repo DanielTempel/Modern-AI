@@ -4,7 +4,7 @@
 
 The previous chapter established that the active context of the AI Software Engineering Assistant should contain information relevant to the model’s current decision rather than all information available to the runtime. A software repository creates the corresponding retrieval problem: a task may depend on only a few methods, tests or configuration files, while the complete repository may contain thousands of files. The challenge is therefore not simply to provide the LLM with more context, but to locate the external evidence relevant to the current task.
 
-\textcite{lewis2020rag} introduced Retrieval-Augmented Generation (RAG) by combining parametric model knowledge with information retrieved from an external non-parametric source. The original work used a neural retriever and dense index. This chapter uses RAG in the broader architectural sense common in current LLM systems: generation is augmented with externally retrieved information at inference time. For a software-engineering assistant, such sources can include repository files, documentation and project knowledge that change independently from model parameters.
+\textcite{lewis2020rag} introduced Retrieval-Augmented Generation (RAG) by combining parametric model knowledge with information retrieved from an external non-parametric source. The original work used a neural retriever and dense index. This chapter uses RAG in the broader architectural sense common in current LLM systems: generation is augmented with externally retrieved information at inference time. For the assistant, such sources can include repository files, documentation and project knowledge that change independently from model parameters.
 
 \section{Repository-aware retrieval}
 \label{sec:repository-retrieval}

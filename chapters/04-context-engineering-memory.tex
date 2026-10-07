@@ -55,7 +55,7 @@ Treating every stored observation as reusable memory would create an increasingl
 
 Even with selective context construction, long tool interactions can produce more useful history than should remain verbatim in every request. Compaction addresses this by replacing part of the previous context with a smaller representation that preserves the information required to continue the task.
 
-For a software-engineering assistant, compacted state should retain the goal, explicit user constraints, scope boundaries, acceptance criteria, important findings, relevant source references, architectural decisions, modified files, verification results and unresolved problems. It should also preserve distinctions between observed facts, hypotheses and unverified interpretations. Obsolete search results, duplicated source snippets, superseded hypotheses and large intermediate logs can often be removed.
+For the assistant, compacted state should retain the goal, explicit user constraints, scope boundaries, acceptance criteria, important findings, relevant source references, architectural decisions, modified files, verification results and unresolved problems. It should also preserve distinctions between observed facts, hypotheses and unverified interpretations. Obsolete search results, duplicated source snippets, superseded hypotheses and large intermediate logs can often be removed.
 
 Anthropic describes compaction as preserving important decisions and unresolved work while discarding redundant information, including old tool results \parencite{anthropic2025context}. OpenAI likewise provides compaction for long-running interactions to reduce context while carrying forward state required by later turns \parencite{openai-compaction}.
 

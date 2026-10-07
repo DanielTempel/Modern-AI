@@ -89,13 +89,13 @@ M_{\text{runtime overhead}}.
 \]
 Therefore, a 4.6 GiB model file does not imply that 4.6 GiB of VRAM is sufficient.
 
-For a software engineering assistant, the active context may include system instructions, a GitHub issue, repository structure, source files, previous messages, tool results and the response generated so far.
+For the assistant, the active context may include system instructions, a GitHub issue, repository structure, source files, previous messages, tool results and the response generated so far.
 
 Three different context-related limits should be distinguished: the maximum context length supported by the model, the context size configured by the inference runtime, and the number of tokens actually used by a particular request. The amount of allocated KV-cache memory also depends on runtime configuration. Dynamic caches grow as more tokens are processed, while static caches may reserve capacity for a configured maximum in advance \parencite{hf-cache-strategies}.
 
 Inference can be divided into two stages. During \textbf{prefill}, the model processes the existing context. During \textbf{decode}, it generates new tokens one by one. Transformer self-attention produces Query, Key and Value representations. Previously calculated Key and Value vectors can be stored in a \textbf{KV cache}, avoiding repeated computation during generation \parencite{hf-cache-strategies}.
 
-The trade-off is additional memory consumption. With a dynamic cache, longer prompts, generated output and tool results appended to subsequent model requests increase the amount of active context. This is especially relevant for coding assistants that may process large source files or long test logs.
+The trade-off is additional memory consumption. With a dynamic cache, longer prompts, generated output and tool results appended to subsequent model requests increase the amount of active context. This is especially relevant for the assistant, which may process large source files or long test logs.
 
 % Crop only the outer whitespace and embedded "Figure 2" caption in LaTeX.
 % The original PNG is preserved unchanged; keep the diagram before its discussion.
