@@ -215,3 +215,12 @@ outputs, function calling и tool use, три JSON-примера, послед�
 Схемы сохранены без изменений в `images/assistant-trial-evaluation.png`
 (Figure 17) и `images/evaluation-regression-loop.png` (Figure 18).
 Они заменяют текстовые наброски из исходного материала.
+
+## Дополнения к обязательным темам
+
+В главу 2 добавлены FP8 (E4M3/E5M2) и обозначения quantization recipes
+Q2–Q8, K/S/M, IQ и publisher-specific UD. В главу 3 добавлены MATH и
+Chatbot Arena как примеры Reasoning/Math и Human Preference evaluation.
+Четыре новых источника включены в общую библиографию.
+Интервал между главами в оглавлении уменьшен до 0.4 em; Figure 13
+набрана шириной 88% строки, чтобы завершение главы 8 не занимало отдельную страницу.

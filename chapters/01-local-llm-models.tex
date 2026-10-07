@@ -15,7 +15,7 @@ Figure~\ref{fig:local-inference-pipeline} traces the conversion of repository in
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=12.5cm]{images/local-llm-inference-pipeline-autoregressive.png}
+\includegraphics[width=11.5cm]{images/local-llm-inference-pipeline-autoregressive.png}
 \caption{Simplified local LLM inference pipeline.}
 \label{fig:local-inference-pipeline}
 \end{figure}
@@ -71,6 +71,10 @@ Quantization can also improve inference speed because smaller weights reduce mem
 
 GGUF, \texttt{Q4\_K\_M} and \texttt{llama.cpp} describe different layers of the system. GGUF is a model file format, \texttt{Q4\_K\_M} is a model quantization scheme that can use a mixture of tensor representations, and \texttt{llama.cpp} is an inference runtime that can load and execute such models \parencite{ggml-quantize,ggml-models}.
 
+Low-precision model formats are not all equivalent. FP8 remains a floating-point representation rather than an integer-style block quantization format. Common FP8 variants include \texttt{E4M3} and \texttt{E5M2}, which trade numerical precision against dynamic range \parencite{nvidia-fp8}. Whether FP8 improves inference performance depends strongly on hardware and runtime support.
+
+GGUF quantization names encode different quantization recipes rather than a uniform number of bits for every tensor. Common llama.cpp variants span low-bit families such as \texttt{Q2\_K}, \texttt{Q3\_K\_M}, \texttt{Q4\_K\_M}, \texttt{Q5\_K\_M} and \texttt{Q6\_K} up to \texttt{Q8\_0}. The leading number indicates the approximate precision class, while the actual effective bits per weight can differ because scales, metadata and mixed tensor representations add overhead. The K suffix identifies the K-quant family, while suffixes such as S and M distinguish smaller and medium mixed-precision variants. IQ variants, such as \texttt{IQ2\_XS} or \texttt{IQ3\_M}, use importance-aware low-bit quantization approaches. Prefixes such as UD are publisher-specific rather than core llama.cpp quantization types; Unsloth uses them for its Dynamic GGUF variants, where quantization choices may differ between layers to preserve quality \parencite{ggml-quantize,unsloth-dynamic}.
+
 An alternative direction is to design models for extremely low-bit weights from the beginning rather than quantizing an already trained high-precision model. BitNet b1.58, for example, uses ternary weights \(\{-1,0,+1\}\), corresponding conceptually to about \(\log_2(3)\approx1.58\) bits of information per weight \parencite{ma2024bitnet}. This is a different model-design approach rather than simply another Q4-like format.
 
 \section{Runtime memory and context}
@@ -103,7 +107,7 @@ Figure~\ref{fig:local-runtime-memory} separates model weights from the additiona
 
 \noindent\begin{minipage}{\linewidth}
 \centering
-\includegraphics[width=16cm,trim=0 165bp 0 125bp,clip]{images/local-llm-runtime-memory.png}
+\includegraphics[width=13.5cm,trim=0 165bp 0 125bp,clip]{images/local-llm-runtime-memory.png}
 \captionsetup{hypcap=false}
 \captionof{figure}{Simplified runtime memory components of a local LLM.}
 \label{fig:local-runtime-memory}
