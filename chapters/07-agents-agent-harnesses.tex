@@ -1,0 +1,29 @@
+% !TeX root = ../Tempel-Daniel.tex
+\chapter{AI Agents and Agent Harnesses}
+\label{chap:agents}
+
+The previous chapters established the components required for the AI Software Engineering Assistant to interact with a software project. The assistant can construct an active context, retrieve repository information and request external operations through structured tool calls, which the runtime may route through MCP. These capabilities do not by themselves determine how multiple actions should be coordinated toward a task objective.
+
+A request such as \emph{Fix GitHub issue \#42 and verify the solution} may require repository inspection, code modification, test execution and further investigation based on intermediate results. In this report, the \textbf{agent harness} is the orchestration part of the assistant runtime that coordinates model calls, context construction, tool execution and task state under defined execution limits.
+
+\section{From tool calls to an agent loop}
+\label{sec:agent-loop}
+
+Chapter~\ref{chap:tool-use} described how a model-generated tool call is executed by the assistant runtime and how its result can be returned in a later model request. An \textbf{agent loop} extends this interaction across a task: the harness constructs the active context, invokes the model, executes an accepted model-selected action, records the resulting observation and uses the updated task state for the next iteration.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{images/agent-loop-harness.png}
+\caption{Agent loop in which the model selects subsequent actions while the harness coordinates execution, updates task state and decides whether another iteration is permitted. Leaving the loop does not by itself establish successful task completion.}
+\label{fig:agent-loop}
+\end{figure}
+
+The model can therefore adapt its next action to evidence obtained during execution. If \texttt{run\_tests} completes but reports failing assertions, the result is a useful observation that may lead the model to inspect another file or revise its previous change. A failure to start the test process or a timeout instead represents an execution problem and may require runtime-level recovery.
+
+A workflow can also branch in response to intermediate results while still following orchestration rules predefined by application code. In the agent loop considered here, the model has greater freedom to select and sequence subsequent actions within limits enforced by the harness. Real systems can combine both approaches. Anthropic similarly distinguishes predefined workflows from agents that dynamically direct their own tool usage \parencite{schluntz2024agents}.
+
+This interaction is related to the action–observation structure studied in ReAct, where actions obtain external information that influences subsequent model decisions \parencite{yao2023react}. For a software-engineering assistant, such observations include source files, search results, compiler output and test results.
+
+The harness coordinates execution, while the model remains responsible for task-level decisions such as which file to inspect or how to revise a failed implementation. The quality of this interaction also depends on the interfaces exposed to the model. SWE-agent demonstrates this through its \textbf{Agent-Computer Interface (ACI)} for repository navigation, file editing and program execution, showing that interface design can materially affect agent performance \parencite{yang2024sweagent}. The behaviour, feedback and constraints of tools such as \texttt{read\_file}, \texttt{apply\_patch} and \texttt{run\_tests} should therefore be treated as part of the agent design.
+
+Finally, termination of the agent loop must be distinguished from successful task completion. Execution may stop because the model produces a final response, a budget is exhausted or an unrecoverable error occurs. Successful completion instead requires evidence that the task's acceptance criteria have been satisfied. Maintaining this distinction across multiple actions requires explicit task state, recovery rules and verification logic.

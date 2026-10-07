@@ -1,0 +1,30 @@
+% Preserve the template cover while the report body uses compact margins.
+\newgeometry{left=4cm,right=2cm,top=2cm,bottom=2cm}
+\begin{titlepage}
+\thispagestyle{empty}
+% Original cover artwork extracted from the user-supplied Word template.
+\AddToShipoutPictureBG*{%
+  \AtPageLowerLeft{\includegraphics[width=\paperwidth,height=\paperheight]{assets/tamk-cover.png}}%
+}
+\begingroup
+\setlength{\parskip}{0pt}
+\setstretch{1}
+% The title sits below the large pale emblem, as in the Word template.
+\vspace*{14.7cm}
+{\color{tamkpurple}\fontsize{26}{31}\selectfont\bfseries
+  \raggedright\ReportTitle\par}
+\vspace{0.35cm}
+{\color{tamkpurple}\fontsize{16}{20}\selectfont
+  \raggedright\ReportSubtitle\par}
+\vspace{0.9cm}
+{\fontsize{14}{18}\selectfont\ReportAuthor\par}
+\vfill
+{\fontsize{12}{15}\selectfont
+  \ReportType\par
+  \ReportDate\par
+  \vspace{0.45cm}
+  \ReportCourse\par
+  \ReportProgramme\par}
+\endgroup
+\end{titlepage}
+\restoregeometry

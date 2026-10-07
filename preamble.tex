@@ -1,0 +1,89 @@
+% Compact layout requested for a maximum of three pages for the first subject.
+% Deviations from TAMK Guide B: 2 cm left margin and 1.15 line spacing.
+% XeLaTeX uses the actual Arial font installed on this computer.
+\usepackage{fontspec}
+\setmainfont{Arial}
+\setsansfont{Arial}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{amsmath}
+\usepackage[a4paper,left=2cm,right=2cm,top=2cm,bottom=2cm,
+  headheight=15pt,headsep=6mm]{geometry}
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{1em}
+\raggedbottom
+\clubpenalty=10000
+\widowpenalty=10000
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\definecolor{tamkpurple}{HTML}{4E008E}
+\usepackage{eso-pic}
+\usepackage{booktabs}
+% Unrelated Java fragment preserved as comments so LaTeX can compile.
+% 		if (item.equals("cheese")) {
+% 			return new NYStyleCheesePizza();
+% 		} else if (item.equals("pepperoni")) {
+% 			return new NYStylePepperoniPizza();
+% 		} else {
+% 			return null;
+% 		}
+\usepackage{caption}
+\captionsetup{font={normalsize,singlespacing},labelfont=normalfont,
+  labelsep=period,justification=justified,singlelinecheck=false}
+\captionsetup*[table]{position=top}
+\captionsetup*[figure]{position=bottom}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+
+\usepackage{titlesec}
+% Compact 12 pt headings, without the report class's large "Chapter" label.
+\titleformat{\chapter}[hang]{\normalfont\normalsize\bfseries\raggedright}
+  {\thechapter}{1em}{\MakeUppercase}
+\titleformat{name=\chapter,numberless}[hang]
+  {\normalfont\normalsize\bfseries\raggedright}{}{0pt}{\MakeUppercase}
+\titlespacing*{\chapter}{0pt}{-\topskip}{8pt}
+\titleformat{\section}{\normalfont\normalsize\bfseries\raggedright}
+  {\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\raggedright}
+  {\thesubsection}{1em}{}
+\titlespacing*{\section}{0pt}{9pt}{3pt}
+\titlespacing*{\subsection}{0pt}{9pt}{3pt}
+\AtBeginDocument{%
+  \setlength{\abovedisplayskip}{5pt}%
+  \setlength{\belowdisplayskip}{5pt}%
+  \setlength{\abovedisplayshortskip}{3pt}%
+  \setlength{\belowdisplayshortskip}{3pt}%
+}
+\setlength{\intextsep}{6pt}
+\setlength{\textfloatsep}{8pt}
+\captionsetup{skip=4pt}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\addto\captionsenglish{\renewcommand{\contentsname}{CONTENTS}}
+
+\usepackage{fancyhdr}
+\fancypagestyle{reportpages}{%
+  \fancyhf{}%
+  \fancyhead[R]{\normalfont\normalsize\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[R]{\normalfont\normalsize\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+
+% APA 7 baseline. Check source-specific TAMK adaptations when adding entries.
+\usepackage[backend=biber,style=apa]{biblatex}
+\DeclareLanguageMapping{english}{english-apa}
+\AtBeginBibliography{\singlespacing\raggedright}
+\setlength{\bibitemsep}{\baselineskip}
+\usepackage{xurl}
+\usepackage[hidelinks,unicode]{hyperref}
+\urlstyle{same}

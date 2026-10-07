@@ -1,0 +1,7 @@
+Mode: built-in image_gen edit
+Input: local-llm-inference-pipeline.png
+Output: local-llm-inference-pipeline-autoregressive.png
+
+Edit target: the supplied Local LLM Inference Pipeline diagram. Make only two precise changes to this existing scientific report figure, preserving the original 4:3 composition, title, blue rounded boxes, navy text and arrows, and every other label and connection.
+1. Replace the text in the bottom box "Generated response" with exactly "Generated token", preserving its typography and box.
+2. Add one thin navy feedback arrow from the LEFT edge of the bottom Generated token box, extending left into the empty space, turning upward through the empty left column, and ending with an arrowhead entering the BOTTOM edge of the upper-left "System prompt / chat history / local files" context box. This makes the context update for autoregressive generation explicit. Label this feedback path exactly "next generation step" in small but legible navy text, laid out over two lines near the left vertical arrow. The arrow must run from the generated token UP to the context, not the opposite direction. Do not overlap existing text or boxes. Preserve all other existing elements exactly. White opaque background. No added footer, caption, watermark or new blocks.
